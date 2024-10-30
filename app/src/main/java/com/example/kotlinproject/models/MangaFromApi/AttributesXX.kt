@@ -1,4 +1,4 @@
-package com.example.kotlinproject.models
+package com.example.kotlinproject.models.MangaFromApi
 
 data class AttributesXX(
     val createdAt: String,
@@ -7,5 +7,5 @@ data class AttributesXX(
     val locale: String,
     val updatedAt: String,
     val version: Int,
-    val volume: Any
+    val volume: String
 )

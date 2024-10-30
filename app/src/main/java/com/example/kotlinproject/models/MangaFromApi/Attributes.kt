@@ -1,4 +1,4 @@
-package com.example.kotlinproject.models
+package com.example.kotlinproject.models.MangaFromApi
 
 data class Attributes(
     val altTitles: List<AltTitle>,

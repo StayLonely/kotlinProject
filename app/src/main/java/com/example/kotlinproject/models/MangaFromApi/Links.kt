@@ -1,4 +1,4 @@
-package com.example.kotlinproject.models
+package com.example.kotlinproject.models.MangaFromApi
 
 data class Links(
     val al: String,
@@ -10,6 +10,5 @@ data class Links(
     val engtl: String,
     val kt: String,
     val mal: String,
-    val mu: String,
-    val raw: String
+    val mu: String
 )

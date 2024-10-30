@@ -22,27 +22,26 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil3.compose.rememberAsyncImagePainter
-import com.example.kotlinproject.models.Data
-import com.example.kotlinproject.models.MangaFromApi
+import com.example.kotlinproject.models.MangaFromApi.Data
+import com.example.kotlinproject.models.MangaFromApi.MangaFromApi
 
 @Composable
 fun SearchScreen(modifier: Modifier, navController: NavHostController) {
     val viewModel: MangaViewModel = viewModel()
     val mangaResponse by viewModel.mangaResponse
-    val coverUrlsMap by viewModel.coverUrlsMap
 
     Surface(modifier = modifier.fillMaxSize()) {
-        MangaFromApiScreen(mangaList = mangaResponse, coversUrlMap = coverUrlsMap, navController = navController)
+        MangaFromApiScreen(mangaList = mangaResponse, navController = navController)
     }
 }
 
 
 @Composable
-fun MangaFromApiScreen(mangaList: MangaFromApi?, coversUrlMap: Map<String, String>, navController: NavHostController) {
+fun MangaFromApiScreen(mangaList: MangaFromApi?, navController: NavHostController) {
     LazyColumn {
         mangaList?.data?.let { data ->
             items(data, key = { it.id }) { selectedManga ->
-                MangaItem(selectedManga, coversUrlMap, onClick = { navController.navigate("MangaDetail/${selectedManga.id}") })
+                MangaItem(selectedManga, onClick = { navController.navigate("MangaDetail/${selectedManga.id}") })
             }
         } ?: run {
             item {
@@ -53,11 +52,16 @@ fun MangaFromApiScreen(mangaList: MangaFromApi?, coversUrlMap: Map<String, Strin
 }
 
 @Composable
-fun MangaItem(data: Data, coversUrlMap: Map<String, String>, onClick: () -> Unit) {
+fun MangaItem(data: Data, onClick: () -> Unit) {
     val title = data.attributes.title.en
     val id = data.id
-    val imageUrl = coversUrlMap[id] ?: ""
     val rating = data.attributes.contentRating
+
+    val fileName = data.relationships.firstOrNull { it.type == "cover_art" }
+        ?.attributes
+        ?.fileName
+
+    val imageUrl = "https://uploads.mangadex.org/covers/${id}/${fileName}.512.jpg"
 
     Row(
         modifier = Modifier

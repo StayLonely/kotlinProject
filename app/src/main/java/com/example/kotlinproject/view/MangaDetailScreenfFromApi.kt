@@ -26,8 +26,8 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.network.HttpException
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.kotlinproject.models.MangaItemFromApi.MangaItemFromApi
 
-import com.example.kotlinproject.models.MangaItemFromApi
 import com.example.kotlinproject.utils.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,7 +50,6 @@ fun MangaDetailScreenFromApi(id: String, navController: NavController) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
-    var coverId by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     var chapter by remember { mutableStateOf("") }
 
@@ -74,24 +73,16 @@ fun MangaDetailScreenFromApi(id: String, navController: NavController) {
                     val data = mangaResponse.data!!
 
 
-                    title = data.attributes.title.en // Предполагаем, что вы хотите отобразить английский заголовок
-                    description = data.attributes.description.toString()
-                    year = data.attributes.year.toString()
+                    title = data.attributes.title.en.ifEmpty { "Неизвестное название" }
+                    description = data.attributes.description.en?.takeIf { it.isNotEmpty() } ?: "Нет описания"
+                    year = data.attributes.year?.takeIf { it.isNotEmpty() } ?: "Нет информации о годе"
+                    val fileName = data.relationships.firstOrNull { it.type == "cover_art" }
+                        ?.attributes
+                        ?.fileName ?: "default_cover" // Поставьте имя файла по умолчанию
 
-                    coverId = data.id
 
-                    var coverIds = listOf(coverId)
-                    var responseCovers = RetrofitInstance.api.getCover(coverIds)
-
-                    if (responseCovers.isSuccessful && responseCovers.body() != null) {
-                        val coverData = responseCovers.body()!!.data
-                        coverData?.forEach { cover ->
-                            val id = cover.relationships.first { it.type == "manga" }.id
-                            val fileName = cover.attributes.fileName
-                            imageUrl = "https://uploads.mangadex.org/covers/${id}/${fileName}.512.jpg"
-                        }
-                    }
-                    chapter = data.attributes.lastChapter
+                    imageUrl = "https://uploads.mangadex.org/covers/${data.id}/$fileName.512.jpg"
+                     chapter = data.attributes.lastChapter?.takeIf { it.isNotEmpty() } ?: "Нет информации о главах"
                 }
             }
 

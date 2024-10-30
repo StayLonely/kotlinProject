@@ -15,11 +15,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import coil3.network.HttpException
 import com.example.kotlinproject.BottomNav
 import com.example.kotlinproject.NavigationGraph
-import com.example.kotlinproject.models.MangaFromApi
 import com.example.kotlinproject.ui.theme.MyAppTheme
 import com.example.kotlinproject.utils.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +45,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BottomNavExample() {
     val navController = rememberNavController()
-
     Scaffold(
         bottomBar = {
             BottomNav(navController)

@@ -15,12 +15,11 @@ import androidx.navigation.compose.composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import coil3.network.HttpException
-import com.example.kotlinproject.models.MangaFromApi
-import com.example.kotlinproject.models.getMangaById
+
 import com.example.kotlinproject.ui.theme.MyAppTheme
 import com.example.kotlinproject.utils.RetrofitInstance
 import com.example.kotlinproject.view.HomeScreen
-import com.example.kotlinproject.view.MangaDetailScreen
+
 import com.example.kotlinproject.view.MangaDetailScreenFromApi
 import com.example.kotlinproject.view.ProfileScreen
 import com.example.kotlinproject.view.SearchScreen
