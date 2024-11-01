@@ -15,6 +15,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataStore
+
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import coil3.network.HttpException
@@ -28,6 +31,7 @@ import kotlinx.coroutines.withContext
 import okio.IOException
 
 class MainActivity : ComponentActivity() {
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -15,19 +15,51 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil3.compose.rememberAsyncImagePainter
+import com.example.kotlinproject.dataStore.DataStoreManager
 import com.example.kotlinproject.models.MangaFromApi.Data
 import com.example.kotlinproject.models.MangaFromApi.MangaFromApi
 
 @Composable
 fun SearchScreen(modifier: Modifier, navController: NavHostController) {
+    val context = LocalContext.current
+    val dataStoreManager = DataStoreManager(context)
+
+    var selectedStatus by remember { mutableStateOf(listOf<String>()) }
+    var selectedContentRating by remember { mutableStateOf(listOf<String>()) }
+    val selectedTags = remember { mutableStateListOf<String>() }
+
+    // Получаем параметры из DataStore
+    LaunchedEffect(key1 = true) {
+        dataStoreManager.getSettings().collect { settings ->
+            selectedStatus = settings.status.split(",")
+            selectedContentRating = settings.contentRating.split(",")
+            selectedTags.clear()
+            selectedTags.addAll(settings.tags)
+        }
+    }
+
     val viewModel: MangaViewModel = viewModel()
+
+
+    LaunchedEffect(selectedStatus, selectedContentRating, selectedTags) {
+        viewModel.fetchManga(selectedStatus, selectedContentRating, selectedTags.toList())
+    }
+
     val mangaResponse by viewModel.mangaResponse
 
     Surface(modifier = modifier.fillMaxSize()) {

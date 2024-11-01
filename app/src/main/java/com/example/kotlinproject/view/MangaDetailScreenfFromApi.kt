@@ -78,7 +78,7 @@ fun MangaDetailScreenFromApi(id: String, navController: NavController) {
                     year = data.attributes.year?.takeIf { it.isNotEmpty() } ?: "Нет информации о годе"
                     val fileName = data.relationships.firstOrNull { it.type == "cover_art" }
                         ?.attributes
-                        ?.fileName ?: "default_cover" // Поставьте имя файла по умолчанию
+                        ?.fileName ?: "default_cover"
 
 
                     imageUrl = "https://uploads.mangadex.org/covers/${data.id}/$fileName.512.jpg"
@@ -128,7 +128,7 @@ fun MangaDetailScreenFromApi(id: String, navController: NavController) {
             update = { imageView ->
                 Glide.with(imageView.context)
                     .load(imageUrl)
-                    .apply(RequestOptions.overrideOf(512, 512)) // Устанавливаем размер
+                    .apply(RequestOptions.overrideOf(512, 512))
                     .into(imageView)
             },
             modifier = Modifier.size(500.dp).align(Alignment.CenterHorizontally)

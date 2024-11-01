@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.datastore.core.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -107,4 +108,16 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation ("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
+
+    implementation ("androidx.datastore:datastore-preferences:1.1.1")
+
+    // optional - RxJava2 support
+    implementation ("androidx.datastore:datastore-preferences-rxjava2:1.1.1")
+
+    // optional - RxJava3 support
+    implementation ("androidx.datastore:datastore-preferences-rxjava3:1.1.1")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+
 }
