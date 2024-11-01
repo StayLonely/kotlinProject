@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "kotlinProject"
 include(":app")
+include(":mylibrary")
