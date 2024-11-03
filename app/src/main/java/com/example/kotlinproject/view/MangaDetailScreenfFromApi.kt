@@ -21,14 +21,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import coil3.network.HttpException
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.kotlinproject.dao.MangaDao
 import com.example.kotlinproject.models.MangaItemFromApi.MangaItemFromApi
 
 import com.example.kotlinproject.utils.RetrofitInstance
+import com.example.kotlinproject.viewmodel.MangaViewModel.MangaViewWorkWithLikes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,8 +56,6 @@ fun MangaDetailScreenFromApi(id: String, navController: NavController) {
     var imageUrl by remember { mutableStateOf("") }
     var chapter by remember { mutableStateOf("") }
 
-
-
     LaunchedEffect(key1 = true) {
         scope.launch(Dispatchers.IO){
             val response = try {
@@ -73,25 +74,25 @@ fun MangaDetailScreenFromApi(id: String, navController: NavController) {
                     val data = mangaResponse.data!!
 
 
-                    title = data.attributes.title.en.ifEmpty { "Неизвестное название" }
+                    title = data.attributes.title.en.takeIf { !it.isNullOrEmpty() }
+                        ?: data.attributes.title.ja.takeIf { !it.isNullOrEmpty() }
+                        ?: "Не удалось получить название"
+
+
                     description = data.attributes.description.en?.takeIf { it.isNotEmpty() } ?: "Нет описания"
                     year = data.attributes.year?.takeIf { it.isNotEmpty() } ?: "Нет информации о годе"
                     val fileName = data.relationships.firstOrNull { it.type == "cover_art" }
                         ?.attributes
                         ?.fileName ?: "default_cover"
-
-
                     imageUrl = "https://uploads.mangadex.org/covers/${data.id}/$fileName.512.jpg"
                      chapter = data.attributes.lastChapter?.takeIf { it.isNotEmpty() } ?: "Нет информации о главах"
                 }
             }
-
         }
     }
 
     val scrollState = rememberScrollState()
 
-    Log.d("Зашли", String.toString())
 
 
     Column(

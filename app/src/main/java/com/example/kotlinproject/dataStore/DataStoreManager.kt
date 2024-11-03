@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.kotlinproject.utils.Util.isFilter
+
 import kotlinx.coroutines.flow.map
 
 
@@ -18,6 +20,9 @@ class DataStoreManager(val context: Context) {
             pref[stringPreferencesKey("contentRating")] = settingsData.contentRating
             pref[stringPreferencesKey("tags")] = settingsData.tags.joinToString(",")
         }
+        isFilter.value = true
+
+
     }
     fun getSettings() = context.dataStore.data.map { pref->
         return@map SettingsData(
@@ -33,5 +38,6 @@ class DataStoreManager(val context: Context) {
             pref[stringPreferencesKey("contentRating")] = ""
             pref[stringPreferencesKey("tags")] = ""
         }
+        isFilter.value = false
     }
 }

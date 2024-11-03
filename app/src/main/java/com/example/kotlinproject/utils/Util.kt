@@ -1,5 +1,7 @@
 package com.example.kotlinproject.utils
 
+import androidx.compose.runtime.mutableStateOf
+
 object Util {
     const val Base = "https://api.mangadex.org"
 
@@ -15,6 +17,9 @@ object Util {
     val statuses = listOf("ongoing", "completed", "hiatus")
     val contentRatings = listOf("safe", "suggestive", "erotica", "pornographic")
 
+    var isFilter = mutableStateOf(false)
+
+
     fun getTagNamesByIds(ids: List<String>): List<String> {
         return ids.mapNotNull { id ->
             tagsMap.entries.find { it.value == id }?.key
@@ -25,6 +30,8 @@ object Util {
             tagsMap[name]
         }
     }
+
+
 
 
 

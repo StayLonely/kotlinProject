@@ -23,12 +23,13 @@ import androidx.navigation.compose.rememberNavController
 import coil3.network.HttpException
 import com.example.kotlinproject.BottomNav
 import com.example.kotlinproject.NavigationGraph
+
+
 import com.example.kotlinproject.ui.theme.MyAppTheme
-import com.example.kotlinproject.utils.RetrofitInstance
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okio.IOException
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+
 
 class MainActivity : ComponentActivity() {
 
@@ -48,6 +49,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BottomNavExample() {
+
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
