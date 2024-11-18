@@ -1,51 +1,50 @@
+import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kotlinproject.models.Data
-import com.example.kotlinproject.models.MangaFromApi
+import com.example.kotlinproject.dao.MangaDao
+import com.example.kotlinproject.dataStore.DataStoreManager
+import com.example.kotlinproject.models.FilterSettings.FilterSettings
+import com.example.kotlinproject.models.MangaEntity.MangaEntity
+import com.example.kotlinproject.models.MangaFromApi.MangaFromApi
 import com.example.kotlinproject.utils.RetrofitInstance
+import com.example.kotlinproject.utils.Util.getTagIdsByNames
+import com.example.kotlinproject.utils.Util.getTagNamesByIds
+import com.example.kotlinproject.utils.Util.isFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MangaViewModel : ViewModel() {
     private val _mangaResponse = mutableStateOf<MangaFromApi?>(null)
-    val mangaResponse = _mangaResponse
+    val mangaResponse: State<MangaFromApi?> get() = _mangaResponse
 
-    private val _coverUrlsMap = mutableStateOf(mutableMapOf<String, String>())
-    val coverUrlsMap = _coverUrlsMap
 
-    init {
-        fetchManga()
-    }
 
-    private fun fetchManga() {
+    fun fetchManga(dataStoreManager: DataStoreManager) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = RetrofitInstance.api.getManga()
-                if (response.isSuccessful && response.body() != null) {
-                    _mangaResponse.value = response.body()
-                    loadCoverImages(response.body()?.data)
+
+                dataStoreManager.getSettings().collect { settings ->
+
+                    val savedStatus = settings.status.split(",").filter { it.isNotBlank() }
+                    val savedContentRating = settings.contentRating.split(",").filter { it.isNotBlank() }
+                    val savedTags = getTagIdsByNames(settings.tags)
+
+                    isFilter.value = savedStatus.isNotEmpty() || savedContentRating.isNotEmpty() || (savedTags != null && savedTags.isNotEmpty())
+
+
+                    val response = RetrofitInstance.api.getManga(savedStatus, savedContentRating, savedTags)
+
+                    if (response.isSuccessful && response.body() != null) {
+                        _mangaResponse.value = response.body() // Обновляем состояние
+                    } else {
+                    }
                 }
             } catch (e: Exception) {
-
-            }
-        }
-    }
-
-    private suspend fun loadCoverImages(mangaData: List<Data>?) {
-        mangaData?.let { data ->
-            val coverIds = data.map { it.id }
-            val coverResponse = RetrofitInstance.api.getCover(coverIds)
-
-            if (coverResponse.isSuccessful && coverResponse.body() != null) {
-                val coverData = coverResponse.body()!!.data
-                coverData?.forEach { cover ->
-                    val id = cover.relationships.first { it.type == "manga" }.id
-                    val fileName = cover.attributes.fileName
-                    val fullUrl = "https://uploads.mangadex.org/covers/$id/$fileName.256.jpg"
-                    _coverUrlsMap.value[id] = fullUrl
-                }
             }
         }
     }

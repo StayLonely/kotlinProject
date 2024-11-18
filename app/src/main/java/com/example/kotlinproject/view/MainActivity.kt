@@ -15,19 +15,24 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataStore
+
+import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import coil3.network.HttpException
 import com.example.kotlinproject.BottomNav
 import com.example.kotlinproject.NavigationGraph
-import com.example.kotlinproject.models.MangaFromApi
+
+
 import com.example.kotlinproject.ui.theme.MyAppTheme
-import com.example.kotlinproject.utils.RetrofitInstance
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okio.IOException
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+
 
 class MainActivity : ComponentActivity() {
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +49,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BottomNavExample() {
-    val navController = rememberNavController()
 
+    val navController = rememberNavController()
     Scaffold(
         bottomBar = {
             BottomNav(navController)
