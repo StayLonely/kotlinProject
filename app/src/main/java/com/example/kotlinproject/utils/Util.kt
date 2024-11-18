@@ -1,6 +1,11 @@
 package com.example.kotlinproject.utils
 
 import androidx.compose.runtime.mutableStateOf
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 object Util {
     const val Base = "https://api.mangadex.org"
@@ -31,6 +36,22 @@ object Util {
         }
     }
 
+
+    val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+    private val REQUEST_CODE_PERMISSIONS = 101
+
+    fun allPermissionsGranted(activity: Activity): Boolean {
+        return REQUIRED_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(
+                activity.applicationContext, it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    fun requestPermissions(activity: Activity) {
+        if (!allPermissionsGranted(activity)) {
+            ActivityCompat.requestPermissions(activity, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+        }
+    }
 
 
 

@@ -150,4 +150,6 @@ dependencies {
     implementation("androidx.room:room-paging:$room_version")
 
     implementation("io.insert-koin:koin-android:4.0.0")
+
+
 }
